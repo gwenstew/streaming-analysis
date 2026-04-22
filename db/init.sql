@@ -7,14 +7,14 @@ CREATE TABLE IF NOT EXISTS raw.movies (
     language TEXT,
     genres TEXT[],
     director TEXT[],
-    cast TEXT[],
+    "cast" TEXT[],
     source TEXT,
     scraped_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TABLE IF NOT EXISTS raw.ratings (
     id SERIAL PRIMARY KEY,
-    movie_id INT REFERENCES raw.movies(id)
+    movie_id INT REFERENCES raw.movies(id),
     title TEXT,
     score NUMERIC,
     vote_avg NUMERIC,

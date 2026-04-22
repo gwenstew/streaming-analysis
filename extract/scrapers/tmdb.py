@@ -108,7 +108,7 @@ def load_to_postgres(movies):
     for movie in movies:
         # Insert into movies table
         cur.execute("""
-            INSERT INTO raw.movies (id, title, release_date, language, genres, director, cast, source)
+            INSERT INTO raw.movies (id, title, release_date, language, genres, director, "cast", source)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
         """, (
             movie["id"],
