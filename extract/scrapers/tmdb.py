@@ -72,7 +72,7 @@ def transform_movie(movie):
     for person in crew:
         crew_by_job.setdefault(person.get("job"),[]).append(person.get("name"))
 
-    directors = crew_by_job["Director"]
+    directors = crew_by_job.get("Director", [])
     top_cast = [actor.get("name") for actor in cast[:5]]
     genres = [g["name"] for g in movie.get("genres", [])]
     
@@ -123,12 +123,12 @@ def load_to_postgres(movies):
 
         # Insert into ratings table
         cur.execute("""
-            INSERT INTO raw.ratings (movie_id, score, vote_avg, vote_count, rating source)
+            INSERT INTO raw.ratings (movie_id, score, vote_avg, vote_count, rating_source)
             VALUES (%s, %s, %s, %s, %s);
         """, (
             movie["id"],
             movie.get("popularity"),
-            movie.get("vote_average"),
+            movie.get("vote_avg"),
             movie.get("vote_count"),
             "tmdb"
         ))
