@@ -101,12 +101,37 @@ def get_top_movies(num_movies=5):
     return transformed_movies
 
 
-def load_to_pg(data):
+def load_to_postgres(movies):
     conn = psycopg2.connect(DATABASE_URL)
-
     cur = conn.cursor()
-    #insert data into db
 
+    for movie in movies:
+        # Insert into movies table
+        cur.execute("""
+            INSERT INTO raw.movies (id, title, release_date, language, genres, director, cast, source)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
+        """, (
+            movie["id"],
+            movie["title"],
+            movie.get("release_date") or None,
+            movie.get("language"),
+            movie.get("genres", []),
+            movie.get("director", []),
+            movie.get("cast", []),
+            "tmdb"
+        ))
+
+        # Insert into ratings table
+        cur.execute("""
+            INSERT INTO raw.ratings (movie_id, score, vote_avg, vote_count, rating source)
+            VALUES (%s, %s, %s, %s, %s);
+        """, (
+            movie["id"],
+            movie.get("popularity"),
+            movie.get("vote_average"),
+            movie.get("vote_count"),
+            "tmdb"
+        ))
 
 
     conn.commit()
@@ -117,7 +142,7 @@ def load_to_pg(data):
 
 def main():
     movies = get_top_movies(5)
-    print(movies)
+    load_to_postgres(movies)
 
 
 if __name__ == "__main__":
